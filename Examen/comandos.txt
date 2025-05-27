@@ -1,4 +1,3 @@
 dotnet watch run
 
-netsh advfirewall firewall add rule name="ASP.NET Backend 5275" dir=in action=allow protocol=TCP localport=5275  //detener el firewall para escuchar el puerto dotnet
 correr el proyecto
