@@ -6,7 +6,7 @@ Esta es una **API REST** desarrollada en .NET 6/7 para gestionar **Cursos** y **
 
 ## Estructura del proyecto
 
-```
+``` plaintext
 Examen
 └── api
     ├── Controllers
@@ -40,6 +40,7 @@ Examen
 - [.NET 6.0 SDK o superior](https://dotnet.microsoft.com/download)
 - SQL Server (puede ser local o remoto) escuchando en el puerto configurado (por defecto `1433`)
 - Herramienta de EF Core CLI:
+
   ```bash
   dotnet tool install --global dotnet-ef
   ```
@@ -55,7 +56,8 @@ En el archivo `appsettings.json` define tu cadena bajo `ConnectionStrings:Defaul
   }
 }
 ```
-##Se acalara que esta es la conexion local la computadora en la que se instalo sql
+
+## Se acalara que esta es la conexion local la computadora en la que se instalo sql
 
 Reemplaza `Server=` y `Database=` según tu entorno.
 
@@ -63,11 +65,15 @@ Reemplaza `Server=` y `Database=` según tu entorno.
 
 1. Abre la terminal en la carpeta del proyecto que contiene el archivo `.csproj` (e.g., `Examen/api`).
 2. Genera la migración inicial:
+  
    ```bash
    dotnet ef migrations add Initial
    ```
-   > Crea el script para crear las tablas **Courses** y **Students**.
+
+  > Crea el script para crear las tablas **Courses** y **Students**.
+  
 3. Aplica la migración y crea la base de datos:
+  
    ```bash
    dotnet ef database update
    ```
@@ -94,7 +100,7 @@ dotnet run
 
 La aplicación escuchará por defecto en:
 
-```
+```plaintext
 https://localhost:5001
 http://localhost:5000
 ```
@@ -104,9 +110,11 @@ http://localhost:5000
 Para explorar y probar la API automáticamente:
 
 1. Abre en tu navegador:
-   ```
-   https://localhost:5001/swagger
-   ```
+
+```plaintext
+https://localhost:5001/swagger
+```
+
 2. Verás todos los endpoints expuestos y podrás hacer llamadas de prueba.
 
 ## Endpoints disponibles
@@ -158,7 +166,8 @@ Para explorar y probar la API automáticamente:
 
 - Se utiliza la carpeta `UploadedImages` para almacenar imágenes de cursos.
 - Las imágenes se exponen en la ruta `/uploads`, por ejemplo:
-  ```
+
+  ```plaintext
   https://localhost:5001/uploads/ingles.jpg
   ```
 
