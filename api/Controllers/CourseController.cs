@@ -1,13 +1,6 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Course;
 using api.Mappers;
-using api.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +16,7 @@ namespace api.Controllers
         public CourseController(ApplicationDBContext context, IWebHostEnvironment env)
         {
             _context = context;
-            _env     = env;
+            _env = env;
         }
 
         // GET api/course
@@ -49,76 +42,85 @@ namespace api.Controllers
 
         // POST api/course
         [HttpPost]
-public async Task<IActionResult> Create([FromForm] CreateCourseDto dto)
-{
-    if (dto.File == null || dto.File.Length == 0)
-        return BadRequest("Debe subir un fichero de imagen.");
+        public async Task<IActionResult> Create([FromForm] CreateCourseDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Name) ||
+                string.IsNullOrWhiteSpace(dto.Description) ||
+                string.IsNullOrWhiteSpace(dto.Schedule) ||
+                string.IsNullOrWhiteSpace(dto.Professor) ||
+                dto.File == null || dto.File.Length == 0)
+            {
+                return BadRequest("Todos los campos son obligatorios.");
+            }
 
-    var course = dto.ToCourse();
-    course.ImageUrl = "";
-    await _context.Courses.AddAsync(course);
-    await _context.SaveChangesAsync();
+            var course = dto.ToCourse();
+            course.ImageUrl = "";
+            await _context.Courses.AddAsync(course);
+            await _context.SaveChangesAsync();
 
-    // Guardar imagen
-    var uploads = Path.Combine(_env.WebRootPath, "UploadedImages");
-    Directory.CreateDirectory(uploads);
-    var ext = Path.GetExtension(dto.File.FileName);
-    var fileName = $"{course.Id}{ext}";
-    var path = Path.Combine(uploads, fileName);
-    using var fs = System.IO.File.Create(path);
-    await dto.File.CopyToAsync(fs);
+            // Guardar imagen
+            course.ImageUrl = await SaveUploadedFile(dto.File, course.Id);
 
-    course.ImageUrl = $"/UploadedImages/{fileName}";
-    _context.Courses.Update(course);
-    await _context.SaveChangesAsync();
+            _context.Courses.Update(course);
+            await _context.SaveChangesAsync();
 
 
-    return CreatedAtAction(nameof(GetById), new { id = course.Id }, course.ToDto());
-}
+            return CreatedAtAction(nameof(GetById), new { id = course.Id }, course.ToDto());
+        }
 
 
         // PUT api/course/5
         [HttpPut("{id}")]
-public async Task<IActionResult> Update(
-    [FromRoute] int id,
-    [FromForm]   UpdateCourseDto dto
-)
-{
-    var course = await _context.Courses.FindAsync(id);
-    if (course == null) return NotFound();
+        public async Task<IActionResult> Update(
+            [FromRoute] int id,
+            [FromForm] UpdateCourseDto dto
+        )
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
 
-    // Si nos llega un fichero, guardarlo y actualizar la URL
-    if (dto.File != null && dto.File.Length > 0)
-    {
-        course.ImageUrl = await SaveUploadedFile(dto.File, course.Id);
-    }
-    // Si dto.File == null, dejamos course.ImageUrl intacto
+            // Validate the DTO
+            if (string.IsNullOrWhiteSpace(dto.Name) ||
+                string.IsNullOrWhiteSpace(dto.Description) ||
+                string.IsNullOrWhiteSpace(dto.Schedule) ||
+                string.IsNullOrWhiteSpace(dto.Professor))
+            {
+                return BadRequest("Todos los campos son obligatorios.");
+            }
 
-    // Mapeamos el resto de campos
-    course.Name        = dto.Name;
-    course.Description = dto.Description;
-    course.Schedule    = dto.Schedule;
-    course.Professor   = dto.Professor;
+            // If the file is provided, we save it
+            // and update the ImageUrl, otherwise we keep the existing ImageUrl
+            if (dto.File != null && dto.File.Length > 0)
+            {
+                course.ImageUrl = await SaveUploadedFile(dto.File, course.Id);
+            }
+            // If dto.File == null, we leave course.ImageUrl intact
 
-    await _context.SaveChangesAsync();
-    return Ok(course.ToDto());
-}
+            // Map the rest of the fields
+            course.Name = dto.Name;
+            course.Description = dto.Description;
+            course.Schedule = dto.Schedule;
+            course.Professor = dto.Professor;
+
+            await _context.SaveChangesAsync();
+            return Ok(course.ToDto());
+        }
 
 
-private async Task<string> SaveUploadedFile(IFormFile file, int id)
-{
-    var uploads = Path.Combine(_env.WebRootPath, "UploadedImages");
-    Directory.CreateDirectory(uploads);
+        private async Task<string> SaveUploadedFile(IFormFile file, int id)
+        {
+            var uploads = Path.Combine(_env.WebRootPath, "UploadedImages");
+            Directory.CreateDirectory(uploads);
 
-    var ext      = Path.GetExtension(file.FileName);
-    var fileName = $"{id}{ext}";
-    var path     = Path.Combine(uploads, fileName);
+            var ext = Path.GetExtension(file.FileName);
+            var fileName = $"{id}_{Guid.NewGuid()}{ext}";
+            var path = Path.Combine(uploads, fileName);
 
-    using var stream = System.IO.File.Create(path);
-    await file.CopyToAsync(stream);
+            using var stream = System.IO.File.Create(path);
+            await file.CopyToAsync(stream);
 
-    return $"/UploadedImages/{fileName}";
-}
+            return $"/UploadedImages/{fileName}";
+        }
 
         // DELETE api/course/5
         [HttpDelete("{id}")]

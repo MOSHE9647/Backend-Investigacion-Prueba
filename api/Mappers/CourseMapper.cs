@@ -1,7 +1,6 @@
 using api.Dtos.Course;
 using api.Dtos.Student;
 using api.Models;
-using System.Linq;
 
 namespace api.Mappers
 {

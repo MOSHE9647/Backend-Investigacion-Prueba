@@ -10,7 +10,7 @@ namespace api.Dtos.Course
         [Required] public string Schedule    { get; set; }
         [Required] public string Professor   { get; set; }
 
-        // Sólo para subir un fichero nuevo; opcional
+        // Only used if we want to update the image
         public IFormFile? File { get; set; }  
     }
 }

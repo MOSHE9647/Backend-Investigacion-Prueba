@@ -26,9 +26,10 @@ public static class TestHelpers
 
     public static IFormFile GetMockFormFile()
     {
+        // Create a mock IFormFile with some fake content
         var fileMock = new Mock<IFormFile>();
         var content = "Fake file content";
-        var fileName = "test.png";
+        var fileName = "testImage_" + Guid.NewGuid() + ".png";
         var ms = new MemoryStream();
         var writer = new StreamWriter(ms);
         writer.Write(content);
