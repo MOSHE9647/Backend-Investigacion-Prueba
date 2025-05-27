@@ -1,9 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using api.Controllers;
-using api.Data;
 using api.Dtos.Course;
 using Moq;
 
@@ -11,48 +7,17 @@ namespace tests;
 
 public class CreateCourseTest
 {
-    private static ApplicationDBContext GetDbContext()
-    {
-        var options = new DbContextOptionsBuilder<ApplicationDBContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb_" + Guid.NewGuid())
-            .Options;
-        return new ApplicationDBContext(options);
-    }
-
-    private static CourseController GetController(ApplicationDBContext context)
-    {
-        var envMock = new Mock<IWebHostEnvironment>();
-        envMock.Setup(e => e.WebRootPath).Returns(Path.GetTempPath());
-        return new CourseController(context, envMock.Object);
-    }
-
-    private static IFormFile GetMockFormFile()
-    {
-        var fileMock = new Mock<IFormFile>();
-        var content = "Fake file content";
-        var fileName = "test.png";
-        var ms = new MemoryStream();
-        var writer = new StreamWriter(ms);
-        writer.Write(content);
-        writer.Flush();
-        ms.Position = 0;
-        fileMock.Setup(_ => _.FileName).Returns(fileName);
-        fileMock.Setup(_ => _.Length).Returns(ms.Length);
-        fileMock.Setup(_ => _.ContentType).Returns("image/png");
-        return fileMock.Object;
-    }
-
     [Fact]
     public async Task CreateCourse_HappyPath_ReturnsCreatedCourse()
     {
         // Arrange
-        var context = GetDbContext();
-        var controller = GetController(context);
+        var context = TestHelpers.GetDbContext();
+        var controller = TestHelpers.GetController(context);
         var dto = new CreateCourseDto
         {
             Name = "Mathematics",
             Description = "Basic math course",
-            File = GetMockFormFile(),
+            File = TestHelpers.GetMockFormFile(),
             Schedule = "Monday, Wednesday, Friday",
             Professor = "Dr. Smith",
         };
@@ -74,8 +39,8 @@ public class CreateCourseTest
     public async Task CreateCourse_InvalidName_ReturnsBadRequest()
     {
         // Arrange
-        var context = GetDbContext();
-        var controller = GetController(context);
+        var context = TestHelpers.GetDbContext();
+        var controller = TestHelpers.GetController(context);
         var dto = new CreateCourseDto
         {
             Name = "", // Invalid name
@@ -96,8 +61,8 @@ public class CreateCourseTest
     public async Task CreateCourse_InvalidDescription_ReturnsBadRequest()
     {
         // Arrange
-        var context = GetDbContext();
-        var controller = GetController(context);
+        var context = TestHelpers.GetDbContext();
+        var controller = TestHelpers.GetController(context);
         var dto = new CreateCourseDto
         {
             Name = "Physics",
@@ -118,8 +83,8 @@ public class CreateCourseTest
     public async Task CreateCourse_InvalidFile_ReturnsBadRequest()
     {
         // Arrange
-        var context = GetDbContext();
-        var controller = GetController(context);
+        var context = TestHelpers.GetDbContext();
+        var controller = TestHelpers.GetController(context);
         var dto = new CreateCourseDto
         {
             Name = "Chemistry",
@@ -140,8 +105,8 @@ public class CreateCourseTest
     public async Task CreateCourse_InvalidSchedule_ReturnsBadRequest()
     {
         // Arrange
-        var context = GetDbContext();
-        var controller = GetController(context);
+        var context = TestHelpers.GetDbContext();
+        var controller = TestHelpers.GetController(context);
         var dto = new CreateCourseDto
         {
             Name = "Chemistry",
@@ -162,8 +127,8 @@ public class CreateCourseTest
     public async Task CreateCourse_InvalidProfessor_ReturnsBadRequest()
     {
         // Arrange
-        var context = GetDbContext();
-        var controller = GetController(context);
+        var context = TestHelpers.GetDbContext();
+        var controller = TestHelpers.GetController(context);
         var dto = new CreateCourseDto
         {
             Name = "Biology",
