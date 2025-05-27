@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // here we set the URL to listen on port 5275
-builder.WebHost.UseUrls("http://0.0.0.0:5275");
+builder.WebHost.UseUrls("http://localhost:5275");
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

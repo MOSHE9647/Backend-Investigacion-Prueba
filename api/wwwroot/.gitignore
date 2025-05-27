@@ -1,0 +1,8 @@
+# Ignora solo imágenes dentro de UploadedImages (jpg, png, jpeg, gif, bmp, webp, svg, etc.)
+UploadedImages/*.jpg
+UploadedImages/*.jpeg
+UploadedImages/*.png
+UploadedImages/*.gif
+UploadedImages/*.bmp
+UploadedImages/*.webp
+UploadedImages/*.svg

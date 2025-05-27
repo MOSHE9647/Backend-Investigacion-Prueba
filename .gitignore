@@ -1,2 +1,35 @@
+# Ignora las carpetas de compilación de .NET
 bin/
 obj/
+
+# Ignora archivos de usuario de Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignora archivos de configuración locales
+*.local.json
+
+# Ignora paquetes NuGet descargados
+packages/
+*.nupkg
+
+# Ignora archivos de logs
+*.log
+
+# Ignora archivos temporales
+*.tmp
+*.temp
+
+# Ignora archivos de configuración de VS Code
+.vscode/
+
+# Ignora archivos de sistema
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Ignora carpetas de publicación
+publish/
+out/
