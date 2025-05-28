@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 // Configure Entity Framework and SQL Server
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 var app = builder.Build();

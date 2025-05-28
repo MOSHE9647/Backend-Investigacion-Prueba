@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
 using api.Controllers;
-using api.Models;
 using api.Dtos.Course;
 
 namespace tests;

@@ -77,7 +77,7 @@ namespace api.Controllers
         )
         {
             var course = await _context.Courses.FindAsync(id);
-            if (course == null) return NotFound();
+            if (course == null) return NotFound("Curso no encontrado.");
 
             // Validate the DTO
             if (string.IsNullOrWhiteSpace(dto.Name) ||
